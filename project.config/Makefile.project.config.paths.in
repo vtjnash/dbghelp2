@@ -1,0 +1,14 @@
+##########################
+##Project paths
+##########
+##requires BUILDPATH CONFSTR SRCPATH INCLUDEPATH OBJPATH WINEPATH
+#####
+
+############################
+##Output paths
+################
+BUILDPATH=$(abspath .)
+OBJPATH=$(BUILDPATH)/objs/$(CONFSTR)/
+OUTLIBPATH=$(BUILDPATH)/lib/dbghelp/$(CONFSTR)/
+OUTBINPATH=$(BUILDPATH)/bin/dbghelp/$(CONFSTR)/
+############################

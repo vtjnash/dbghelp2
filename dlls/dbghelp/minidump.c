@@ -30,6 +30,16 @@
 #include "psapi.h"
 #include "wine/debug.h"
 
+typedef struct _THREAD_BASIC_INFORMATION {
+  NTSTATUS                ExitStatus;
+  PVOID                   TebBaseAddress;
+  CLIENT_ID               ClientId;
+  KAFFINITY               AffinityMask;
+  KPRIORITY               Priority;
+  KPRIORITY               BasePriority;
+} THREAD_BASIC_INFORMATION, *PTHREAD_BASIC_INFORMATION;
+
+
 WINE_DEFAULT_DEBUG_CHANNEL(dbghelp);
 
 /******************************************************************
@@ -63,15 +73,16 @@ static BOOL fetch_process_info(struct dump_context* dc)
         {
             if (HandleToUlong(spi->UniqueProcessId) == dc->pid)
             {
-                dc->num_threads = spi->dwThreadCount;
+                dc->num_threads = spi->NumberOfThreads;
                 dc->threads = HeapAlloc(GetProcessHeap(), 0,
                                         dc->num_threads * sizeof(dc->threads[0]));
                 if (!dc->threads) goto failed;
                 for (i = 0; i < dc->num_threads; i++)
                 {
-                    dc->threads[i].tid        = HandleToULong(spi->ti[i].ClientId.UniqueThread);
-                    dc->threads[i].prio_class = spi->ti[i].dwBasePriority; /* FIXME */
-                    dc->threads[i].curr_prio  = spi->ti[i].dwCurrentPriority;
+                    PSYSTEM_THREADS Threads = (PSYSTEM_THREADS)(spi+1);
+                    dc->threads[i].tid        = HandleToULong(Threads[i].ClientId.UniqueThread);
+                    dc->threads[i].prio_class = Threads[i].BasePriority; /* FIXME */
+                    dc->threads[i].curr_prio  = Threads[i].Priority;
                 }
                 HeapFree(GetProcessHeap(), 0, pcs_buffer);
                 return TRUE;

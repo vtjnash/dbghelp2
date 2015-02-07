@@ -1,0 +1,18 @@
+##########################
+##Project, compiler specifics
+##########
+##GCC
+#####
+
+CONFSTR=GCC_RELEASE
+
+##For gcc 3.4.5 this works because wine understands dwarf2, but for
+## newer versions of GCC -gstabs is needed ( -gdwarf-2 didn't seem to work )
+CPP_DEBUG_FLAGS=-g3
+
+##########################
+
+WINE_INCLUDEFLAGS=$(x-I)include \
+	$(x-I)include/mingw64
+DBGHELP_LDFLAGS=-lpsapi -lkernel32 -lntdll -lversion \
+	-Wl,--enable-stdcall-fixup

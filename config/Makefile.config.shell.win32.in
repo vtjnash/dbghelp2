@@ -1,0 +1,11 @@
+##############################
+##Shell specific
+##############################
+
+MKDIR=mkdir
+SHELLCOMMENTSTR=rem
+RM=rm -f -r
+CP=cp -f -r
+TOUCH=touch
+PAUSE=pause
+##############################

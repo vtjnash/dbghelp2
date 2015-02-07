@@ -1,0 +1,10 @@
+##############################
+##Platform specific
+##############################
+BINEXT=.exe
+EXEEXT=.exe
+BINARYEXT=.exe
+DYNLIBEXT=.dll
+DLLEXT=.dll
+
+##############################

@@ -1,0 +1,19 @@
+
+These are configuration files for Makefiles. They set up default programs and variables for different platforms, shells, and compilers.
+
+Makefile.config.in
+  Includes the appropriate config files for the selected system.
+Makefile.config.gcc.in
+  Default configuration for GCC.
+Makefile.config.msvc.in
+  Default configuration for MSVC.
+Makefile.config.shell.unix.in
+  Default configuration for Unix-like shell.
+Makefile.config.shell.win32.in
+  Default configuration for Windows shell.
+Makefile.config.unix.in
+  Default confuration for Unix platform.
+Makefile.config.win32.in
+  Default confuration for Windows platform.
+Makefile.config.generic.in
+  Default configuration common to all.

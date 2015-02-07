@@ -1,0 +1,8 @@
+
+include project.config/Makefile.project.config.paths.in
+
+ifeq ($(COMPILER), MSVC)
+include project.config/Makefile.project.config.msvc.in
+else
+include project.config/Makefile.project.config.gcc.in
+endif

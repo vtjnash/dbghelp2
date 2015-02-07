@@ -1,0 +1,10 @@
+##############################
+##Platform specific
+##############################
+BINEXT=.so
+EXEEXT=.so
+BINARYEXT=.so
+DYNLIBEXT=.so
+DLLEXT=.so
+
+##############################

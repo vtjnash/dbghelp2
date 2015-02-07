@@ -1,0 +1,41 @@
+PLATFORM=WIN32
+SHELL_PLATFORM=UNIX
+COMPILER=GCC
+
+###Generic defaults
+include config/Makefile.config.generic.in
+
+###Platform defaults
+ifeq ($(PLATFORM), WIN32)
+###Win32 Platform specific defaults
+include config/Makefile.config.win32.in
+else
+###Unix Platform specific defaults
+include config/Makefile.config.unix.in
+endif
+
+
+################
+###Shell defaults
+################
+ifeq ($(SHELL_PLATFORM), WIN32)
+###Windows Shell defaults
+include config/Makefile.config.shell.win32.in
+else
+###Unix Shell defaults
+include config/Makefile.config.shell.unix.in
+endif
+################
+
+
+################
+###Compiler defaults
+################
+ifeq ($(COMPILER), MSVC)
+###makefile defaults for MSVC
+include config/Makefile.config.msvc.in
+else
+###makefile defaults for GCC
+include config/Makefile.config.gcc.in
+endif
+################

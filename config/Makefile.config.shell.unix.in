@@ -1,0 +1,11 @@
+##############################
+##Shell specific
+##############################
+
+MKDIR=mkdir -p
+SHELLCOMMENTSTR=#
+RM=rm -f -r
+CP=cp -f -r
+TOUCH=touch
+PAUSE=read -p "Press enter key to continue ..."
+##############################

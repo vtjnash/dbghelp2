@@ -115,20 +115,8 @@ const WCHAR *get_wine_loader_name(void)
         WCHAR *p, *buffer;
         const char *ptr;
 
-        /* All binaries are loaded with WINELOADER (if run from tree) or by the
-         * main executable
-         */
-        if ((ptr = getenv("WINELOADER")))
-        {
-            DWORD len = 2 + MultiByteToWideChar( CP_UNIXCP, 0, ptr, -1, NULL, 0 );
-            buffer = HeapAlloc( GetProcessHeap(), 0, len * sizeof(WCHAR) );
-            MultiByteToWideChar( CP_UNIXCP, 0, ptr, -1, buffer, len );
-        }
-        else
-        {
             buffer = HeapAlloc( GetProcessHeap(), 0, sizeof(wineW) + 2 * sizeof(WCHAR) );
             strcpyW( buffer, wineW );
-        }
         p = buffer + strlenW( buffer ) - strlenW( suffixW );
         if (p > buffer && !strcmpW( p, suffixW ))
         {
@@ -422,16 +410,8 @@ static BOOL module_is_container_loaded(const struct process* pcs,
     size_t              len;
     struct module*      module;
     PCWSTR              filename, modname;
-    static WCHAR*       dll_prefix;
-    static int          dll_prefix_len;
-
-    if (!dll_prefix)
-    {
-        dll_prefix_len = MultiByteToWideChar( CP_UNIXCP, 0, DLLPREFIX, -1, NULL, 0 );
-        dll_prefix = HeapAlloc( GetProcessHeap(), 0, dll_prefix_len * sizeof(WCHAR) );
-        MultiByteToWideChar( CP_UNIXCP, 0, DLLPREFIX, -1, dll_prefix, dll_prefix_len );
-        dll_prefix_len--;
-    }
+    static const WCHAR  dll_prefix[] = DLLPREFIX;
+    static int          dll_prefix_len = sizeof(dll_prefix)/2-1;
 
     if (!base) return FALSE;
     filename = get_filename(ImageName, NULL);

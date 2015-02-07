@@ -26,6 +26,8 @@
 
 #include "dbghelp_private.h"
 
+#include <io.h>
+
 /* Copyright (C) 1986 Gary S. Brown
  * Modified by Robert Shearman. You may use the following calc_crc32 code or
  * tables extracted from it, as desired without restriction. */

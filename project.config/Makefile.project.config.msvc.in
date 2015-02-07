@@ -1,0 +1,16 @@
+##########################
+##Project, compiler specifics
+##########
+##MSVC
+#####
+
+CONFSTR=MSVC_RELEASE
+
+CPP_DEBUG_FLAGS=/debug /OPT:REF /OPT:ICF /debugtype:cv
+
+##########################
+
+WINE_INCLUDEFLAGS=$(x-I)include \
+	$(x-I)include\msvc
+DBGHELP_LDFLAGS=psapi.lib kernel32.lib version.lib \
+	libcmt.lib lib\msvc\ntdll.lib

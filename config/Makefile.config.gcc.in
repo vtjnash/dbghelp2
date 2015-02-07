@@ -1,0 +1,57 @@
+##############################
+##############################
+##Compiler specific
+##############################
+CC=gcc
+CC-c=-c
+CC-o=-o
+CXX=g++
+CXX-o=-o
+CXX-c=-c
+CPP=$(CC) -E
+
+DEPENDS_CC=$(CC) -MM
+DEPENDS_CC-o=-o
+DEPENDS_CC_TARGET =-MT
+DEPENDS_CXX=$(CXX) -MM
+DEPENDS_CXX-o=-o
+DEPENDS_CXX_TARGET=-MT
+
+#fixme:
+LD=g++
+##tells linker what the output file should be named
+LD-o=-o
+##fixme:tells linker to make an executable.
+LD-exe=
+##on Windows, tells linker to make an executable windowed.
+LD-sub-windows=-Wl,--subsystem,windows
+##tells linker to produce an import library ( usually when making a dll ).
+LD--out-implib=-Wl,--out-implib=
+##tells linker to make a dll.
+LD-shared=-shared
+##tells linker to use .def file.
+LD-def=
+##tells linker to look for libraries in path.
+LD-L=-L
+
+AR=ar
+AR-r=-r
+AR-o=
+ARFLAGS=
+
+RANLIB=ranlib
+
+RC="windres"
+RC-o=-o
+
+
+
+OBJEXT=.o
+LIBPREFIX=lib
+LIBEXT=.a
+IMPLIBPREFIX=lib
+IMPLIBEXT=.a
+
+x-I=-I
+x-D=-D
+##############################

@@ -1,0 +1,62 @@
+##############################
+##############################
+##Compiler specific
+##############################
+
+##todo:force C Flag
+CC=cl /nologo
+CC-c=/c
+CC-o=/Fo
+#fixme: force C++ flag
+CXX=cl /nologo
+CXX-o=/Fo
+CXX-c=/c
+#fixme: cpp for msvc?
+CPP=$(CC) -E
+
+DEPENDS_CC=$(SHELLCOMMENTSTR) $(CC) /showIncludes
+DEPENDS_CC-o=-o
+DEPENDS_CC_TARGET =-MT
+DEPENDS_CXX=$(SHELLCOMMENTSTR) $(CXX) /showIncludes
+DEPENDS_CXX-o=-o
+DEPENDS_CXX_TARGET=-MT
+
+#fixme:
+LD=link /nologo
+##tells linker what the output file should be named
+LD-o=/out:
+##fixme:tells linker to make an executable.
+LD-exe=
+##on Windows, tells linker to make an executable windowed.
+LD-sub-windows=-Wl,--subsystem,windows
+##tells linker to produce an import library ( usually when making a dll ).
+LD--out-implib=/implib:
+##tells linker to make a dll.
+LD-shared=/dll
+##tells linker to use .def file.
+LD-def=/def:
+##tells linker to look for libraries in path.
+LD-L=/LIBPATH:
+
+AR=link /LIB /NOLOGO
+AR-r=
+AR-o=/out:
+ARFLAGS=
+
+RANLIB=$(SHELLCOMMENTSTR) ranlib, not needed for link
+
+##todo: resources for cl?
+RC="windres"
+RC-o=-o
+
+
+
+OBJEXT=.obj
+LIBPREFIX=
+LIBEXT=.lib
+IMPLIBPREFIX=
+IMPLIBEXT=.lib
+
+x-I=/I
+x-D=/D
+##############################

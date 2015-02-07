@@ -27,6 +27,113 @@
 #include "winternl.h"
 #include "wine/debug.h"
 
+typedef struct _THREAD_BASIC_INFORMATION {
+  NTSTATUS                ExitStatus;
+  PVOID                   TebBaseAddress;
+  CLIENT_ID               ClientId;
+  KAFFINITY               AffinityMask;
+  KPRIORITY               Priority;
+  KPRIORITY               BasePriority;
+} THREAD_BASIC_INFORMATION, *PTHREAD_BASIC_INFORMATION;
+/***********************************************************************
+ * TEB data structure from wine
+ */
+#define TEB TEB_real
+#define _TEB _TEB_real
+#define PTEB PTEB_real
+typedef struct _GDI_TEB_BATCH
+{
+    ULONG  Offset;
+    HANDLE HDC;
+    ULONG  Buffer[0x136];
+} GDI_TEB_BATCH;
+typedef struct _RTL_ACTIVATION_CONTEXT_STACK_FRAME
+{
+    struct _RTL_ACTIVATION_CONTEXT_STACK_FRAME *Previous;
+    struct _ACTIVATION_CONTEXT                 *ActivationContext;
+    ULONG                                       Flags;
+} RTL_ACTIVATION_CONTEXT_STACK_FRAME, *PRTL_ACTIVATION_CONTEXT_STACK_FRAME;
+
+typedef struct _ACTIVATION_CONTEXT_STACK
+{
+    ULONG                               Flags;
+    ULONG                               NextCookieSequenceNumber;
+    RTL_ACTIVATION_CONTEXT_STACK_FRAME *ActiveFrame;
+    LIST_ENTRY                          FrameListCache;
+} ACTIVATION_CONTEXT_STACK, *PACTIVATION_CONTEXT_STACK;
+typedef struct _TEB
+{                                                                 /* win32/win64 */
+    NT_TIB                       Tib;                               /* 000/0000 */
+    PVOID                        EnvironmentPointer;                /* 01c/0038 */
+    CLIENT_ID                    ClientId;                          /* 020/0040 */
+    PVOID                        ActiveRpcHandle;                   /* 028/0050 */
+    PVOID                        ThreadLocalStoragePointer;         /* 02c/0058 */
+    PPEB                         Peb;                               /* 030/0060 */
+    ULONG                        LastErrorValue;                    /* 034/0068 */
+    ULONG                        CountOfOwnedCriticalSections;      /* 038/006c */
+    PVOID                        CsrClientThread;                   /* 03c/0070 */
+    PVOID                        Win32ThreadInfo;                   /* 040/0078 */
+    ULONG                        Win32ClientInfo[31];               /* 044/0080 used for user32 private data in Wine */
+    PVOID                        WOW32Reserved;                     /* 0c0/0100 */
+    ULONG                        CurrentLocale;                     /* 0c4/0108 */
+    ULONG                        FpSoftwareStatusRegister;          /* 0c8/010c */
+    PVOID                        SystemReserved1[54];               /* 0cc/0110 used for kernel32 private data in Wine */
+    LONG                         ExceptionCode;                     /* 1a4/02c0 */
+    ACTIVATION_CONTEXT_STACK     ActivationContextStack;            /* 1a8/02c8 */
+    BYTE                         SpareBytes1[24];                   /* 1bc/02e8 used for ntdll private data in Wine */
+    PVOID                        SystemReserved2[10];               /* 1d4/0300 used for ntdll private data in Wine */
+    GDI_TEB_BATCH                GdiTebBatch;                       /* 1fc/0350 used for vm86 private data in Wine */
+    HANDLE                       gdiRgn;                            /* 6dc/0838 */
+    HANDLE                       gdiPen;                            /* 6e0/0840 */
+    HANDLE                       gdiBrush;                          /* 6e4/0848 */
+    CLIENT_ID                    RealClientId;                      /* 6e8/0850 */
+    HANDLE                       GdiCachedProcessHandle;            /* 6f0/0860 */
+    ULONG                        GdiClientPID;                      /* 6f4/0868 */
+    ULONG                        GdiClientTID;                      /* 6f8/086c */
+    PVOID                        GdiThreadLocaleInfo;               /* 6fc/0870 */
+    ULONG                        UserReserved[5];                   /* 700/0878 */
+    PVOID                        glDispachTable[280];               /* 714/0890 */
+    PVOID                        glReserved1[26];                   /* b74/1150 */
+    PVOID                        glReserved2;                       /* bdc/1220 */
+    PVOID                        glSectionInfo;                     /* be0/1228 */
+    PVOID                        glSection;                         /* be4/1230 */
+    PVOID                        glTable;                           /* be8/1238 */
+    PVOID                        glCurrentRC;                       /* bec/1240 */
+    PVOID                        glContext;                         /* bf0/1248 */
+    ULONG                        LastStatusValue;                   /* bf4/1250 */
+    UNICODE_STRING               StaticUnicodeString;               /* bf8/1258 used by advapi32 */
+    WCHAR                        StaticUnicodeBuffer[261];          /* c00/1268 used by advapi32 */
+    PVOID                        DeallocationStack;                 /* e0c/1478 */
+    PVOID                        TlsSlots[64];                      /* e10/1480 */
+    LIST_ENTRY                   TlsLinks;                          /* f10/1680 */
+    PVOID                        Vdm;                               /* f18/1690 */
+    PVOID                        ReservedForNtRpc;                  /* f1c/1698 */
+    PVOID                        DbgSsReserved[2];                  /* f20/16a0 */
+    ULONG                        HardErrorDisabled;                 /* f28/16b0 */
+    PVOID                        Instrumentation[16];               /* f2c/16b8 */
+    PVOID                        WinSockData;                       /* f6c/1738 */
+    ULONG                        GdiBatchCount;                     /* f70/1740 */
+    ULONG                        Spare2;                            /* f74/1744 */
+    PVOID                        Spare3;                            /* f78/1748 */
+    PVOID                        Spare4;                            /* f7c/1750 */
+    PVOID                        ReservedForOle;                    /* f80/1758 */
+    ULONG                        WaitingOnLoaderLock;               /* f84/1760 */
+    PVOID                        Reserved5[3];                      /* f88/1768 */
+    PVOID                       *TlsExpansionSlots;                 /* f94/1780 */
+    ULONG                        ImpersonationLocale;               /* f98/1788 */
+    ULONG                        IsImpersonating;                   /* f9c/178c */
+    PVOID                        NlsCache;                          /* fa0/1790 */
+    PVOID                        ShimData;                          /* fa4/1798 */
+    ULONG                        HeapVirtualAffinity;               /* fa8/17a0 */
+    PVOID                        CurrentTransactionHandle;          /* fac/17a8 */
+    PVOID                        ActiveFrame;                       /* fb0/17b0 */
+#ifdef _WIN64
+    PVOID                        unknown[2];                        /*     17b8 */
+#endif
+    PVOID                       *FlsSlots;                          /* fb4/17c8 */
+} TEB, *PTEB;
+/***********************************************************************/
+
 WINE_DEFAULT_DEBUG_CHANNEL(dbghelp);
 
 #define V86_FLAG  0x00020000
