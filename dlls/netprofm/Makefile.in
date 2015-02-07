@@ -1,7 +1,0 @@
-MODULE    = netprofm.dll
-
-C_SRCS = \
-	list.c \
-	main.c
-
-IDL_SRCS = netprofm.idl
